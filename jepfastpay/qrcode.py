@@ -3,6 +3,7 @@ import os
 import qrcode
 import base64
 import hashlib
+import urllib.parse
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad,pad
 from PIL import Image
@@ -51,6 +52,18 @@ def generate_payload(id: str = "") -> str:
     total = encrypt(encr.decode() + SEPARATOR + ID_METHOD)
     return total.decode()
 
+def generate_payload_url(id: str = "") -> str:
+    """
+    Generate payload for generate JEPFast QR code
+
+    :param id: JEPFast id
+    :return:
+    """
+    # sanitize id
+    target = sanitize_target(id)
+    encr = encrypt(target)
+    total = encrypt(encr.decode() + SEPARATOR + ID_METHOD)
+    return urllib.parse.quote(total.decode())
 
 def to_image(payload: str = "") -> Image:
     """
